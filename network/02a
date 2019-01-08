@@ -1,0 +1,1 @@
+ifconfig | grep -A6 $(networksetup -listallhardwareports | grep -i -A1 "Hardware Port: Ethernet" | tail -1 | sed 's/Device: //') | grep broadcast | rev | cut -f1 -d " " | rev

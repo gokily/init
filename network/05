@@ -1,0 +1,1 @@
+ping -c1 slash16.org | grep PING | cut -f3 -d" " | tr -d "(" | tr -d "):"
