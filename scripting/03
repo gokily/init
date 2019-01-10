@@ -1,21 +1,80 @@
 #!/bin/bash
 
+_DEF='\033[0m'
+_GREEN='\033[32m'
+_YELLOW='\033[33m'
+
+SELF=`basename "$0"`
+
 function stdio()
 {
-	echo "## Checking for stdio header ##"
-	ret="$(grep -r stdio.h *)"
-	echo $ret
-	if [[ $ret -eq 1 ]]; then
-		echo "Did not find stdio header"
+	echo -e "\n## Checking for stdio header ##"
+	ret=$(grep --exclude $SELF -r stdio.h *)
+	if [[ $(echo $ret | wc -c) -eq 1 ]]; then
+		echo -e "$_GREEN\0Did not find stdio header.$_DEF"
+	else
+		echo -e "$_YELLOW\0Found stdio header.$_DEF"
+		echo -e $ret
 	fi
 }
 
-if [ "$#" -ne 1 && "$#" -ne 0 ]; then
+function malloc()
+{
+	echo -e "\n## Checking for malloc protection ##"
+	ret=$(grep -n --exclude $SELF -r malloc * | grep -v '!' |\
+		grep -v "== NULL" | grep --color=always malloc)
+	if [[ $(echo $ret | wc -c) -eq 1 ]]; then
+		echo -e "$_GREEN\0Did not find unprotected malloc.$_DEF"
+	else
+		echo -ne "$_YELLOW\0Printing suspicious lines, "
+		echo -e "please check if correctly protected.$_DEF"
+		echo -e $ret
+	fi
+}
+
+function all()
+{
+	stdio
+	malloc
+	exit 1
+}
+
+function helper()
+{
+	echo -e "Usage: $0 -option
+	-all 
+		Execute all tests.
+	-stdio
+		Check for stdio header in file.
+	-malloc
+		Check for unprotected malloc."
+	exit 1
+}
+
+if [[ "$#" -ne 1 && "$#" -ne 0 ]]; then
 	echo "Wrong number of argument. Use -help to get usage."
 	exit 1
 fi
 
 if [[ "$#" -eq 0 ]]; then
-	stdio
+	all
 	exit 1
 fi
+
+case $1 in
+	-stdio)
+		stdio
+		;;
+	-malloc)
+		malloc
+		;;
+	-all)
+		all
+		;;
+	-help)
+		helper
+		;;
+	*)
+		echo $"Wrong argument. Use -help to get usage."
+		exit 1
+esac
