@@ -1,1 +1,1 @@
-ps aux | grep -e sshd | tr -s " " | cut -d" " -f2
+ps aux | grep sshd | grep root | tr -s " " | cut -d" " -f2

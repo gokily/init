@@ -1,1 +1,1 @@
-dscl . list /Users | grep -v "^_"
+cat /etc/passwd | cut -f1 -d:

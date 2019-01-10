@@ -1,1 +1,1 @@
-pkgutil --pkgs
+apt list --installed

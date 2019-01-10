@@ -1,0 +1,1 @@
+kill -9 ; deluser -remove-all-files newcomer

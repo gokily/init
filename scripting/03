@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function stdio()
+{
+	echo "## Checking for stdio header ##"
+	ret="$(grep -r stdio.h *)"
+	echo $ret
+	if [[ $ret -eq 1 ]]; then
+		echo "Did not find stdio header"
+	fi
+}
+
+if [ "$#" -ne 1 && "$#" -ne 0 ]; then
+	echo "Wrong number of argument. Use -help to get usage."
+	exit 1
+fi
+
+if [[ "$#" -eq 0 ]]; then
+	stdio
+	exit 1
+fi
